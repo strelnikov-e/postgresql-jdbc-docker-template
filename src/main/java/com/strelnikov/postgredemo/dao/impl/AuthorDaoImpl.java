@@ -3,6 +3,12 @@ package com.strelnikov.postgredemo.dao.impl;
 import com.strelnikov.postgredemo.dao.AuthorDao;
 import com.strelnikov.postgredemo.domain.Author;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 
 public class AuthorDaoImpl implements AuthorDao {
 
@@ -18,5 +24,26 @@ public class AuthorDaoImpl implements AuthorDao {
                 "INSERT INTO authors (id, name, age) VALUES (?, ?, ?)",
                 author.getId(), author.getName(), author.getAge()
         );
+    }
+
+    @Override
+    public Optional<Author> findOne(Long id) {
+        List<Author> authors = jdbcTemplate.query(
+                "SELECT * FROM authors WHERE author.id = ? LIMIT 1",
+                new AuthorRowMapper(), id
+        );
+        return authors.stream().findFirst();
+    }
+
+    public static class AuthorRowMapper implements RowMapper<Author> {
+
+        @Override
+        public Author mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new Author(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getInt("age")
+            );
+        }
     }
 }
