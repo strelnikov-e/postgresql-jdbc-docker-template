@@ -4,12 +4,14 @@ import com.strelnikov.postgredemo.dao.AuthorDao;
 import com.strelnikov.postgredemo.domain.Author;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class AuthorDaoImpl implements AuthorDao {
 
     private final JdbcTemplate jdbcTemplate;
@@ -29,7 +31,7 @@ public class AuthorDaoImpl implements AuthorDao {
     @Override
     public Optional<Author> findOne(Long id) {
         List<Author> authors = jdbcTemplate.query(
-                "SELECT * FROM authors WHERE author.id = ? LIMIT 1",
+                "SELECT * FROM authors WHERE id = ? LIMIT 1",
                 new AuthorRowMapper(), id
         );
         return authors.stream().findFirst();

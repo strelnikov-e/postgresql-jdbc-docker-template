@@ -24,13 +24,13 @@ public class AuthorDaoImplTest {
 
     @Test
     public void testThatCreateAuthorGeneratesCorrectSql() {
-        Author author = new Author(1L, "Abigail Rose", 80);
+        Author author = TestDataUtil.createTestAuthorA();
         underTest.create(author);
 
         Mockito.verify(jdbcTemplate).update(
                 eq("INSERT INTO authors (id, name, age) VALUES (?, ?, ?)"),
                 eq(1L),
-                eq("Abigail Rose"),
+                eq("Author One"),
                 eq(80)
 
         );
@@ -41,7 +41,7 @@ public class AuthorDaoImplTest {
         underTest.findOne(1L);
 
         Mockito.verify(jdbcTemplate).query(
-                eq("SELECT * FROM authors WHERE author.id = ? LIMIT 1"),
+                eq("SELECT * FROM authors WHERE id = ? LIMIT 1"),
                 ArgumentMatchers.<AuthorDaoImpl.AuthorRowMapper>any(),
                 eq(1L)
         );

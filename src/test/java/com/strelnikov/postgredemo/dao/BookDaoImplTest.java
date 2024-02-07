@@ -23,26 +23,26 @@ public class BookDaoImplTest {
 
     @Test
     public void testThatCreateBookGeneratesCorrectSql() {
-        Book book = new Book("987-6-543-2100-0", "The shadow in the attic", 1L);
+        Book book = TestDataUtil.createTestBookA();
 
         underTest.create(book);
 
         Mockito.verify(jdbcTemplate).update(
                 eq("INSERT INTO books (isbn, title, author_id) VALUES (?, ?, ?)"),
-                eq("987-6-543-2100-0"),
-                eq("The shadow in the attic"),
+                eq("111-1-111-1000-0"),
+                eq("Book One"),
                 eq(1L)
         );
     }
 
     @Test
     public void testThatFindOneBookGeneratesCorrectSql() {
-        underTest.findOne("987-6-543-2100-0");
+        underTest.findOne("111-1-111-1000-0");
 
         Mockito.verify(jdbcTemplate).query(
-                eq("SELECT * FROM books WHERE books.isdn = ?"),
+                eq("SELECT * FROM books WHERE isbn = ?"),
         ArgumentMatchers.< BookDaoImpl.BookRowMapper>any(),
-        eq("987-6-543-2100-0")
+        eq("111-1-111-1000-0")
         );
     }
 

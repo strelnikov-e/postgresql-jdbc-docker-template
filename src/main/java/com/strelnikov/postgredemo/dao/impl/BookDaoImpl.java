@@ -4,12 +4,14 @@ import com.strelnikov.postgredemo.dao.BookDao;
 import com.strelnikov.postgredemo.domain.Book;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class BookDaoImpl implements BookDao {
 
     private final JdbcTemplate jdbcTemplate;
@@ -31,7 +33,7 @@ public class BookDaoImpl implements BookDao {
     @Override
     public Optional<Book> findOne(String isdn) {
         List<Book> results = jdbcTemplate.query(
-                "SELECT * FROM books WHERE books.isdn = ?",
+                "SELECT * FROM books WHERE isbn = ?",
                 new BookRowMapper(),
                 isdn
         );
@@ -42,7 +44,7 @@ public class BookDaoImpl implements BookDao {
 
         @Override
         public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Book(rs.getString("isdn"),
+            return new Book(rs.getString("isbn"),
                     rs.getString("title"),
                     rs.getLong("author_id"));
         }
