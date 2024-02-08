@@ -40,6 +40,15 @@ public class BookDaoImpl implements BookDao {
         return results.stream().findFirst();
     }
 
+    @Override
+    public List<Book> findAll() {
+        List<Book> result = jdbcTemplate.query(
+                "SELECT isbn, name, author_id FROM books",
+                new BookRowMapper()
+        );
+        return result;
+    }
+
     public static class BookRowMapper implements RowMapper<Book> {
 
         @Override
@@ -48,5 +57,21 @@ public class BookDaoImpl implements BookDao {
                     rs.getString("title"),
                     rs.getLong("author_id"));
         }
+    }
+
+    @Override
+    public void update(String isbn, Book book) {
+        jdbcTemplate.update(
+                "UPDATE books SET isbn = ?, title = ?, author_id = ? WHERE isbn = ?",
+                book.getIsbn(), book.getTitle(), book.getAuthorId(), isbn
+        );
+    }
+
+    @Override
+    public void delete(String isbn) {
+        jdbcTemplate.update(
+                "DELETE FROM books WHERE isbn = ?",
+                isbn
+        );
     }
 }

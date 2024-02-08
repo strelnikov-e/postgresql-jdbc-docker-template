@@ -46,4 +46,35 @@ public class BookDaoImplTest {
         );
     }
 
+    @Test
+    public void testThatFindAllBooksGeneratesCorrectSql() {
+        underTest.findAll();
+
+        Mockito.verify(jdbcTemplate).query(
+                eq("SELECT isbn, name, author_id FROM books"),
+                ArgumentMatchers.<BookDaoImpl.BookRowMapper>any()
+        );
+    }
+
+    @Test
+    public void testThatUpdateGeneratesCorrectSql() {
+        Book book = TestDataUtil.createTestBookA();
+        book.setTitle("Updated");
+        underTest.update(book.getIsbn(), book);
+
+        Mockito.verify(jdbcTemplate).update(
+                "UPDATE books SET isbn = ?, title = ?, author_id = ? WHERE isbn = ?",
+                book.getIsbn(), "Updated", book.getAuthorId(), book.getIsbn()
+        );
+    }
+
+    @Test
+    public void testThatDeleteBookGeneratesCorrectSql() {
+        underTest.delete("111-1-111-1000-0");
+
+        Mockito.verify(jdbcTemplate).update(
+                "DELETE FROM books WHERE isbn = ?",
+                "111-1-111-1000-0"
+        );
+    }
 }

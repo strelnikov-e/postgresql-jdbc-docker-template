@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,6 +33,41 @@ public class AuthorDaoImplIntegrationTest {
         Optional<Author> result = underTest.findOne(author.getId());
         assertThat(result).isPresent();
         assertThat(result.get().getId()).isEqualTo(author.getId());
+    }
+
+    @Test
+    public void findAllShouldReturnListOfAuthors() {
+        Author authorA = TestDataUtil.createTestAuthorA();
+        Author authorB = TestDataUtil.createTestAuthorB();
+        Author authorC = TestDataUtil.createTestAuthorC();
+
+        underTest.create(authorA);
+        underTest.create(authorB);
+        underTest.create(authorC);
+
+        List<Author> result = underTest.findAll();
+        assertThat(result).hasSize(3);
+    }
+
+    @Test
+    public void testThatAuthorCanBeUpdated() {
+        Author author = TestDataUtil.createTestAuthorA();
+        underTest.create(author);
+        author.setName("Updated Author");
+        underTest.update(author.getId(), author);
+
+        Optional<Author> result = underTest.findOne(author.getId());
+        assertThat(result).isPresent();
+        assertThat(result.get().getName()).isEqualTo(author.getName());
+    }
+
+    @Test
+    public void testThatDeleteAuthorDeletesSuccessfully() {
+        Author author = TestDataUtil.createTestAuthorA();
+        underTest.create(author);
+        underTest.delete(author.getId());
+        Optional<Author> result = underTest.findOne(author.getId());
+        assertThat(result).isEmpty();
     }
 
 }

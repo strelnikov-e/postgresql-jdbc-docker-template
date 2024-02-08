@@ -46,4 +46,36 @@ public class AuthorDaoImplTest {
                 eq(1L)
         );
     }
-}
+
+    @Test
+    public void testThatFindAllGeneratesTheCorrectSql() {
+        underTest.findAll();
+
+        Mockito.verify(jdbcTemplate).query(
+                eq("SELECT id, name, age FROM authors"),
+                ArgumentMatchers.<AuthorDaoImpl.AuthorRowMapper>any()
+        );
+    }
+
+    @Test
+    public void testThatUpdateAuthorGeneratesCorrectSql() {
+        Author author = TestDataUtil.createTestAuthorA();
+        underTest.update(3L, author);
+
+        Mockito.verify(jdbcTemplate).update(
+                "UPDATE authors SET id = ?, name = ?, age = ? WHERE id = ?",
+                1L, "Author One", 80, 3L
+        );
+    }
+
+    @Test
+    public  void testThatDeleteAuthorGeneratesCorrectSql() {
+        Author author = TestDataUtil.createTestAuthorA();
+        underTest.delete(1L);
+
+        Mockito.verify(jdbcTemplate).update(
+                "DELETE FROM authors WHERE id = ?",
+                1L
+        );
+    }
+ }

@@ -12,11 +12,11 @@ public class TestDataUtil {
     }
 
     public static Author createTestAuthorB() {
-        return new Author(1L, "Author Two", 24);
+        return new Author(2L, "Author Two", 24);
     }
 
     public static Author createTestAuthorC() {
-        return new Author(1L, "Author Three", 47);
+        return new Author(3L, "Author Three", 47);
     }
 
     public static Book createTestBookA() {
